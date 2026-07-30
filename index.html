@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule & Timetable | CSE Dept</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER SECTION -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="brand-section">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div class="brand-title">
+                        <h1>Class Timetable 2026</h1>
+                        <p>Computer Science & Engineering • Section A (Semester 4)</p>
+                    </div>
+                </div>
+
+                <!-- Live Digital Clock -->
+                <div class="clock-widget">
+                    <div>
+                        <i class="fa-regular fa-clock" style="color: var(--accent-primary); margin-right: 6px;"></i>
+                        <span id="currentTime" class="time-display">09:35 AM</span>
+                    </div>
+                    <div id="currentDate" class="date-display">Thursday, July 30</div>
+                </div>
+            </div>
+
+            <!-- Live Status Banner -->
+            <div class="live-status-bar">
+                <div class="live-indicator">
+                    <span class="pulse-dot"></span>
+                    <span class="live-text">Status: <strong id="liveStatusText">Checking schedule...</strong></span>
+                </div>
+                <div id="nextClassText" style="color: var(--text-secondary); font-size: 0.8125rem;">
+                    Next Class: Loading...
+                </div>
+            </div>
+        </header>
+
+        <!-- QUICK METRICS -->
+        <section class="metrics-row">
+            <div class="metric-card">
+                <div class="metric-icon blue">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Total Courses</h4>
+                    <p id="metricTotalCourses">7 Subjects</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon purple">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Weekly Hours</h4>
+                    <p id="metricWeeklyHours">25 Hours</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon emerald">
+                    <i class="fa-solid fa-flask"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Lab Sessions</h4>
+                    <p id="metricLabSessions">3 Labs / Week</p>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon amber">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Class Counselor</h4>
+                    <p>Dr. R. Sharma</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTROLS & FILTER BAR -->
+        <section class="controls-card">
+            <!-- Search Box -->
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search subject, code, or teacher...">
+            </div>
+
+            <!-- Day Filter Pills -->
+            <div class="day-filters" id="dayFilterContainer">
+                <button class="filter-pill active" data-day="ALL">All Days</button>
+                <button class="filter-pill" data-day="Monday">Mon</button>
+                <button class="filter-pill" data-day="Tuesday">Tue</button>
+                <button class="filter-pill" data-day="Wednesday">Wed</button>
+                <button class="filter-pill" data-day="Thursday">Thu</button>
+                <button class="filter-pill" data-day="Friday">Fri</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary btn-icon" id="themeToggleBtn" title="Toggle Light/Dark Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <button class="btn btn-secondary" id="viewToggleBtn" title="Switch View">
+                    <i class="fa-solid fa-table-cells"></i> <span id="viewToggleLabel">Day View</span>
+                </button>
+
+                <button class="btn btn-secondary" id="printBtn" title="Print Timetable">
+                    <i class="fa-solid fa-print"></i> Print
+                </button>
+
+                <button class="btn btn-primary" id="addClassBtn">
+                    <i class="fa-solid fa-plus"></i> Add Class
+                </button>
+            </div>
+        </section>
+
+        <!-- MAIN TIMETABLE CONTAINER -->
+        <main class="view-container">
+            <!-- 1. GRID TABLE VIEW -->
+            <div class="table-wrapper" id="gridViewWrapper">
+                <table class="timetable-grid" id="timetableGrid">
+                    <thead>
+                        <tr>
+                            <th class="day-column-head">Day / Time</th>
+                            <th>08:30 - 09:30 AM</th>
+                            <th>09:30 - 10:30 AM</th>
+                            <th>10:30 - 10:45 AM</th>
+                            <th>10:45 - 11:45 AM</th>
+                            <th>11:45 - 12:45 PM</th>
+                            <th>12:45 - 01:30 PM</th>
+                            <th>01:30 - 02:30 PM</th>
+                            <th>02:30 - 03:30 PM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetableBody">
+                        <!-- Dynamically Generated Rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 2. DAY CARDS VIEW (For mobile & alternate layout) -->
+            <div class="day-cards-wrapper" id="dayCardsWrapper">
+                <!-- Dynamically Generated Cards per Day -->
+            </div>
+        </main>
+    </div>
+
+    <!-- SUBJECT DETAIL MODAL -->
+    <div class="modal-backdrop" id="detailModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalSubjectTitle">Subject Details</h3>
+                <button class="close-btn" id="closeDetailModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalSubjectBody">
+                <!-- Dynamic Content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closeDetailBtn">Close</button>
+                <button class="btn btn-primary" id="editSubjectBtn"><i class="fa-solid fa-pen"></i> Edit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT CLASS MODAL -->
+    <div class="modal-backdrop" id="formModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="formModalTitle">Add New Class</h3>
+                <button class="close-btn" id="closeFormModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="classForm">
+                    <input type="hidden" id="editClassId">
+                    <div class="form-group">
+                        <label for="formDay">Day</label>
+                        <select id="formDay" class="form-control" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formTimeSlot">Time Slot</label>
+                        <select id="formTimeSlot" class="form-control" required>
+                            <option value="P1">08:30 - 09:30 AM</option>
+                            <option value="P2">09:30 - 10:30 AM</option>
+                            <option value="P3">10:45 - 11:45 AM</option>
+                            <option value="P4">11:45 - 12:45 PM</option>
+                            <option value="P5">01:30 - 02:30 PM</option>
+                            <option value="P6">02:30 - 03:30 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formSubject">Subject Name</label>
+                        <input type="text" id="formSubject" class="form-control" placeholder="e.g. Data Structures & Algorithms" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formCode">Course Code</label>
+                        <input type="text" id="formCode" class="form-control" placeholder="e.g. CS401" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formTeacher">Faculty / Teacher</label>
+                        <input type="text" id="formTeacher" class="form-control" placeholder="e.g. Dr. Alan Turing" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formRoom">Room / Lab No.</label>
+                        <input type="text" id="formRoom" class="form-control" placeholder="e.g. Lab 3 / Room 302" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formCategory">Category</label>
+                        <select id="formCategory" class="form-control" required>
+                            <option value="cs">Computer Science</option>
+                            <option value="math">Mathematics</option>
+                            <option value="dbms">DBMS / Database</option>
+                            <option value="ai">Artificial Intelligence</option>
+                            <option value="eng">English & Humanities</option>
+                            <option value="lab">Practical / Lab</option>
+                            <option value="gen">General / Seminar</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelFormBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveClassBtn">Save Class</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
